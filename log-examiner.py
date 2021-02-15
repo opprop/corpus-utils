@@ -70,16 +70,16 @@ def check_log(project_name):
         # TODO: extract this logic to a common module, share with run-tool-on-corpus.
         project_dir = os.path.join(CORPUS_LOCATION, project_name)
         os.chdir(project_dir)
-        print "Enter directory: {}".format(project_dir)
+        print("Enter directory: {}".format(project_dir))
         if project["clean"] == '' or project["build"] == '':
-            print "Error: there were no build/clean cmd in project {}.".format(project_name)
-        print "Cleaning project..."
+            print("Error: there were no build/clean cmd in project {}.".format(project_name))
+        print("Cleaning project...")
         subprocess.call(shlex.split(project["clean"]))
-        print "Cleaning done."
+        print("Cleaning done.")
 
         cmd = [TOOL_EXECUTABLE, exceptions[0], project["build"]]
 
-        print "Running test minimizer: {}".format(" ".join(cmd))
+        print("Running test minimizer: {}".format(" ".join(cmd)))
         rtn_code = subprocess.call(cmd)
 
 if __name__ == "__main__":

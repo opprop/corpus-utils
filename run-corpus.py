@@ -21,55 +21,55 @@ def main(argv):
 
     BENCHMARK_DIR = os.path.join(corpus_dir, corpus_name)
 
-    print "----- Fetching corpus... -----"
+    print("----- Fetching corpus... -----")
     if not os.path.exists(BENCHMARK_DIR):
-        print "Creating corpus dir {}.".format(BENCHMARK_DIR)
+        print("Creating corpus dir {}.".format(BENCHMARK_DIR))
         os.makedirs(BENCHMARK_DIR)
-        print "Corpus dir {} created.".format(BENCHMARK_DIR)
+        print("Corpus dir {} created.".format(BENCHMARK_DIR))
 
-    print "Loading corpus file..."
+    print("Loading corpus file...")
     projects = None
     with open (args.corpus_file) as projects_file:
         projects = yaml.load(projects_file)["projects"]
-    print "Loading corpus file done."
+    print("Loading corpus file done.")
 
-    print projects
+    print(projects)
 
-    print "Enter corpus dir {}.".format(BENCHMARK_DIR)
+    print("Enter corpus dir {}.".format(BENCHMARK_DIR))
     os.chdir(BENCHMARK_DIR)
 
-    for project_name, project_attrs in projects.iteritems():
+    for project_name, project_attrs in projects.items():
         project_dir = os.path.join(BENCHMARK_DIR, project_name)
         if not os.path.exists(project_dir):
             git("clone", project_attrs["giturl"], "--depth", "1")
 
-    print "----- Fetching corpus done. -----"
+    print("----- Fetching corpus done. -----")
 
-    print "----- Runnning Executable on corpus... -----"
+    print("----- Runnning Executable on corpus... -----")
 
     failed_projects = list()
 
-    for project_name, project_attrs in projects.iteritems():
+    for project_name, project_attrs in projects.items():
         project_dir = os.path.join(BENCHMARK_DIR, project_name)
         os.chdir(project_dir)
-        print "Enter directory: {}".format(project_dir)
+        print("Enter directory: {}".format(project_dir))
         if project_attrs["clean"] == '' or project_attrs["build"] == '':
-            print "Skip project {}, as there were no build/clean cmd.".format(project_name)
-        print "Cleaning project..."
+            print("Skip project {}, as there were no build/clean cmd.".format(project_name))
+        print("Cleaning project...")
         subprocess.call(shlex.split(project_attrs["clean"]))
-        print "Cleaning done."
-        print "Running command: {}".format(tool_excutable + " " + project_attrs["build"])
+        print("Cleaning done.")
+        print("Running command: {}".format(tool_excutable + " " + project_attrs["build"]))
         rtn_code = subprocess.call([tool_excutable, project_attrs["build"]])
-        print "Return code is {}.".format(rtn_code)
+        print("Return code is {}.".format(rtn_code))
         if not rtn_code == 0:
             failed_projects.append(project_name)
 
     if len(failed_projects) > 0:
-        print "----- Executable failed on {} out of {} projects. Failed projects are: {} -----".format(len(failed_projects), len(projects), failed_projects)
+        print("----- Executable failed on {} out of {} projects. Failed projects are: {} -----".format(len(failed_projects), len(projects), failed_projects))
     else:
-        print "----- Executable succeed infer all {} projects. -----".format(len(projects))
+        print("----- Executable succeed infer all {} projects. -----".format(len(projects)))
 
-    print "----- Runnning Executable on corpus done. -----"
+    print("----- Runnning Executable on corpus done. -----")
 
     rtn_code = 1 if len(failed_projects) > 0 else 0
 
