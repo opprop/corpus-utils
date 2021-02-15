@@ -42,17 +42,18 @@ CORPUS = None
 EXCEPTION_PATTERN = None
 TOOL_EXECUTABLE = "$jsr308/ontology/run-test-minimizer.sh"
 
+
 def main(argv):
- 
     global EXCEPTION_PATTERN, CORPUS
     EXCEPTION_PATTERN = re.compile("^\s*Exception: .*")
-    with open (CORPUS_FILE) as corpus:
+    with open(CORPUS_FILE) as corpus:
         CORPUS = yaml.load(corpus)["projects"]
 
     examined_projects = ["commons-compress", "commons-lang"]
 
     pool = Pool(4)
     pool.map(check_log, examined_projects)
+
 
 def check_log(project_name):
     exceptions_context = list()
@@ -63,8 +64,7 @@ def check_log(project_name):
         for i, line in enumerate(log_content):
             if bool(re.search(EXCEPTION_PATTERN, line)):
                 exceptions.append(re.escape(line.strip()))
-                exceptions_context.append("".join(log_content[i - 2 : i + 3]))
-
+                exceptions_context.append("".join(log_content[i - 2: i + 3]))
 
     if len(exceptions) > 0:
         # TODO: extract this logic to a common module, share with run-tool-on-corpus.
@@ -81,6 +81,7 @@ def check_log(project_name):
 
         print("Running test minimizer: {}".format(" ".join(cmd)))
         rtn_code = subprocess.call(cmd)
+
 
 if __name__ == "__main__":
     main(sys.argv)

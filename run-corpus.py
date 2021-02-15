@@ -8,6 +8,7 @@ import argparse
 # --corpus-file <absPath> --executable <absPath>
 ONTOLOGY_DIR = os.path.dirname(os.path.realpath(__file__))
 
+
 def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('--corpus-file', dest='corpus_file', required=True)
@@ -29,7 +30,7 @@ def main(argv):
 
     print("Loading corpus file...")
     projects = None
-    with open (args.corpus_file) as projects_file:
+    with open(args.corpus_file) as projects_file:
         projects = yaml.load(projects_file)["projects"]
     print("Loading corpus file done.")
 
@@ -65,7 +66,8 @@ def main(argv):
             failed_projects.append(project_name)
 
     if len(failed_projects) > 0:
-        print("----- Executable failed on {} out of {} projects. Failed projects are: {} -----".format(len(failed_projects), len(projects), failed_projects))
+        print("----- Executable failed on {} out of {} projects. Failed projects are: {} -----".format(
+            len(failed_projects), len(projects), failed_projects))
     else:
         print("----- Executable succeed infer all {} projects. -----".format(len(projects)))
 
@@ -75,8 +77,10 @@ def main(argv):
 
     sys.exit(rtn_code)
 
+
 def git(*args):
     return subprocess.check_call(['git'] + list(args))
+
 
 if __name__ == "__main__":
     main(sys.argv)
